@@ -24,8 +24,8 @@ skipped_ext = set()
 for file_path in directory_path.rglob('*'):
     audio = None
     if file_path.is_file():
-        if "El Maleh Rachamim by Sarah" not in str(file_path):
-            continue
+        # if "Riders In the Sky" not in str(file_path):
+        #     continue
         # print(file_path)
         if file_path.suffix.lower() == '.mp3':
             try:
@@ -77,10 +77,14 @@ for file_path in directory_path.rglob('*'):
                 output_file = output_path.joinpath(str(mb_id)+'.json')
                 if not output_file.is_file():
                     # print(file_path)
-                    a_feats = get_audio_features(str(file_path))
+                    try:
+                        a_feats = get_audio_features(str(file_path))
+                        with open(output_file, "w") as json_file:
+                            json.dump(a_feats, json_file, indent=4, cls=CustomEncoder)
+                    except:
+                        print("Feats error:", file_path)
                     # print(a_feats)
-                    with open(output_file, "w") as json_file:
-                        json.dump(a_feats, json_file, indent=4, cls=CustomEncoder)
+
             else:
                 print("Empty ID:", file_path)
                 print(audio)
