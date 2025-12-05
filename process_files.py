@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
@@ -24,7 +25,7 @@ skipped_ext = set()
 for file_path in directory_path.rglob('*'):
     audio = None
     if file_path.is_file():
-        # if "Riders In the Sky" not in str(file_path):
+        # if "ith My Ex" not in str(file_path):
         #     continue
         # print(file_path)
         if file_path.suffix.lower() == '.mp3':
@@ -77,12 +78,17 @@ for file_path in directory_path.rglob('*'):
                 output_file = output_path.joinpath(str(mb_id)+'.json')
                 if not output_file.is_file():
                     # print(file_path)
+                    a_feats = None
                     try:
+                        # time.sleep(3)
                         a_feats = get_audio_features(str(file_path))
+                    except Exception as e:
+                        print("Feats error:", file_path, e)
+
+                    if a_feats is not None:
                         with open(output_file, "w") as json_file:
                             json.dump(a_feats, json_file, indent=4, cls=CustomEncoder)
-                    except:
-                        print("Feats error:", file_path)
+                            print("Feats saved:", output_file)
                     # print(a_feats)
 
             else:

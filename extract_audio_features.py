@@ -36,7 +36,7 @@ def extract_features(x, sr):
     features = pd.Series(index=columns(), dtype=np.float32, name="tid")
 
     # Catch warnings as exceptions (audioread leaks file descriptors).
-    warnings.filterwarnings('error', module='librosa')
+    # warnings.filterwarnings('error', module='librosa')
 
     def feature_stats(name, values):
         features[name, 'mean'] = np.mean(values, axis=1)
@@ -136,7 +136,12 @@ def extract_features(x, sr):
 
 def get_audio_features(audio_path):
     new_dict = {}
-    x, sr = librosa.load(audio_path)
+    x = None
+    sr = None
+    try:
+        x, sr = librosa.load(audio_path)
+    except Exception as e:
+        print(e)
     audio_features = extract_features(x, sr)
     dict_obj = audio_features.to_dict()
     for key in dict_obj:
